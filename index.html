@@ -1,0 +1,2223 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة QDU للاختبار التفاعلي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .app-container {
+            min-height: 100%;
+            width: 100%;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .app-container.light-mode {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+        }
+
+        .app-container.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+
+        .top-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .light-mode .control-btn {
+            background: white;
+            color: #4a90e2;
+        }
+
+        .dark-mode .control-btn {
+            background: #2c3e50;
+            color: #f39c12;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px;
+        }
+
+        .platform-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .subject-name {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: inline-block;
+            color: #2c3e50;
+        }
+
+        .student-credit {
+            font-size: 0.95rem;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            font-weight: 600;
+        }
+
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .lecture-card:last-child {
+            grid-column: 1 / -1;
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .lecture-card {
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light-mode .lecture-card {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .lecture-card {
+            background: #2c3e50;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .lecture-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .lecture-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .lecture-number {
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .lecture-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 25px;
+        }
+
+        .light-mode .quiz-container {
+            background: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .quiz-container {
+            background: #2c3e50;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .quiz-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .light-mode .progress-bar {
+            background: #e0e0e0;
+        }
+
+        .dark-mode .progress-bar {
+            background: #1a1a2e;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+        }
+
+        .question-section {
+            margin: 30px 0;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        .translate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .translate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .translation {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            direction: rtl;
+            text-align: right;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .light-mode .translation {
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        .dark-mode .translation {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: #dbeafe;
+            border: 2px solid #60a5fa;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            font-family: 'Poppins', sans-serif;
+            padding: 18px 25px;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .light-mode .option-btn {
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .dark-mode .option-btn {
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            border-color: #10b981;
+            animation: successPulse 0.5s ease-out;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            color: white;
+            border-color: #ef4444;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes successPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(16, 185, 129, 0.6);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(16, 185, 129, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            direction: rtl;
+            text-align: right;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .feedback-box.error {
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .light-mode .feedback-box.error {
+            color: #92400e;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+
+        .dark-mode .feedback-box.error {
+            color: #fef3c7;
+            background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
+            border: 2px solid #fbbf24;
+        }
+
+        .next-btn {
+            margin-top: 25px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .results-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-chart-wrapper {
+            max-width: 300px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        .circular-progress {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: auto;
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke-width: 15;
+        }
+
+        .light-mode .progress-ring-bg {
+            stroke: #e0e0e0;
+        }
+
+        .dark-mode .progress-ring-bg {
+            stroke: #1a1a2e;
+        }
+
+        .progress-ring {
+            fill: none;
+            stroke-width: 15;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 2s ease-out;
+        }
+
+        .progress-ring.fail {
+            stroke: url(#failGradient);
+        }
+
+        .progress-ring.pass {
+            stroke: url(#passGradient);
+        }
+
+        .progress-ring.excellent {
+            stroke: url(#excellentGradient);
+            filter: drop-shadow(0 0 10px rgba(246, 211, 101, 0.6));
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(246, 211, 101, 0.6));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(246, 211, 101, 0.9));
+            }
+        }
+
+        .results-center-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .results-score {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .results-score.fail {
+            color: #eb3349;
+        }
+
+        .results-score.pass {
+            color: #00b09b;
+        }
+
+        .results-score.excellent {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: scoreCount 2s ease-out;
+        }
+
+        @keyframes scoreCount {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .results-label {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            margin-top: 8px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 20px 0;
+            font-family: 'Tajawal', sans-serif;
+            animation: badgeBounce 0.6s ease-out;
+        }
+
+        @keyframes badgeBounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .badge-fail {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(235, 51, 73, 0.4);
+        }
+
+        .badge-pass {
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 176, 155, 0.4);
+        }
+
+        .badge-excellent {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(246, 211, 101, 0.5);
+            animation: badgeBounce 0.6s ease-out, shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                box-shadow: 0 5px 20px rgba(246, 211, 101, 0.5);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(246, 211, 101, 0.8);
+            }
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px auto;
+            max-width: 650px;
+        }
+
+        .stat-card {
+            padding: 25px 20px;
+            border-radius: 18px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light-mode .stat-card {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .stat-card {
+            background: #1a1a2e;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stat-card.correct-card {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+        }
+
+        .dark-mode .stat-card.correct-card {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            border: 2px solid #34d399;
+        }
+
+        .stat-card.wrong-card {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+        }
+
+        .dark-mode .stat-card.wrong-card {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+            border: 2px solid #f87171;
+        }
+
+        .stat-card.total-card {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px solid #3b82f6;
+        }
+
+        .dark-mode .stat-card.total-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            border: 2px solid #60a5fa;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: inline-block;
+            animation: iconPop 0.5s ease-out;
+        }
+
+        @keyframes iconPop {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 10px 0;
+            line-height: 1;
+            animation: countUp 1.5s ease-out;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card.correct-card .stat-value {
+            color: #059669;
+        }
+
+        .dark-mode .stat-card.correct-card .stat-value {
+            color: #34d399;
+        }
+
+        .stat-card.wrong-card .stat-value {
+            color: #dc2626;
+        }
+
+        .dark-mode .stat-card.wrong-card .stat-value {
+            color: #f87171;
+        }
+
+        .stat-card.total-card .stat-value {
+            color: #2563eb;
+        }
+
+        .dark-mode .stat-card.total-card .stat-value {
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .stat-card.correct-card .stat-label {
+            color: #047857;
+        }
+
+        .dark-mode .stat-card.correct-card .stat-label {
+            color: #a7f3d0;
+        }
+
+        .stat-card.wrong-card .stat-label {
+            color: #b91c1c;
+        }
+
+        .dark-mode .stat-card.wrong-card .stat-label {
+            color: #fecaca;
+        }
+
+        .stat-card.total-card .stat-label {
+            color: #1d4ed8;
+        }
+
+        .dark-mode .stat-card.total-card .stat-label {
+            color: #bfdbfe;
+        }
+
+        .results-message {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 25px 0;
+            font-family: 'Tajawal', sans-serif;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 2px solid #667eea;
+        }
+
+        .light-mode .secondary-btn {
+            color: #667eea;
+        }
+
+        .dark-mode .secondary-btn {
+            color: #a78bfa;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .review-section {
+            margin-top: 40px;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .review-question {
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .light-mode .review-question {
+            background: #f8f9fa;
+        }
+
+        .dark-mode .review-question {
+            background: #1a1a2e;
+        }
+
+        .review-question-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .review-answer {
+            font-family: 'Poppins', sans-serif;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .review-answer.user {
+            background: rgba(235, 51, 73, 0.15);
+            color: #eb3349;
+        }
+
+        .review-answer.correct {
+            background: rgba(0, 176, 155, 0.15);
+            color: #00b09b;
+        }
+
+        .confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                padding: 15px;
+            }
+
+            .lecture-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 15px 20px;
+            }
+
+            .platform-title {
+                font-size: 1.6rem;
+                padding: 15px 20px;
+            }
+
+            .subject-name {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+
+            .student-credit {
+                font-size: 0.85rem;
+                padding: 10px 20px;
+            }
+
+            .top-controls {
+                top: 10px;
+                left: 10px;
+                gap: 8px;
+            }
+
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .lecture-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .lecture-card {
+                padding: 25px 20px;
+            }
+
+            .lecture-card:last-child {
+                max-width: 100%;
+            }
+
+            .lecture-icon {
+                font-size: 3rem;
+            }
+
+            .lecture-title {
+                font-size: 1rem;
+            }
+
+            .quiz-container {
+                padding: 20px 15px;
+                border-radius: 20px;
+            }
+
+            .quiz-title {
+                font-size: 1.4rem;
+            }
+
+            .question-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+
+            .translate-btn {
+                align-self: flex-start;
+                padding: 10px 18px;
+                font-size: 0.95rem;
+            }
+
+            .translation {
+                font-size: 0.95rem;
+                padding: 12px;
+            }
+
+            .option-btn {
+                padding: 15px 18px;
+                font-size: 0.95rem;
+            }
+
+            .feedback-box {
+                padding: 15px;
+                font-size: 0.95rem;
+            }
+
+            .next-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+                width: 100%;
+            }
+
+            .results-container {
+                padding: 30px 15px;
+            }
+
+            .results-container h2 {
+                font-size: 1.6rem;
+            }
+
+            .results-chart-wrapper {
+                max-width: 250px;
+            }
+
+            .results-score {
+                font-size: 2.5rem;
+            }
+
+            .results-label {
+                font-size: 0.85rem;
+            }
+
+            .performance-badge {
+                padding: 10px 25px;
+                font-size: 1.05rem;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 20px 15px;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .stat-value {
+                font-size: 2.2rem;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+            }
+
+            .results-message {
+                font-size: 1.1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .action-btn {
+                width: 100%;
+                padding: 12px 25px;
+            }
+
+            .review-question {
+                padding: 18px;
+            }
+
+            .review-question-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .platform-title {
+                font-size: 1.4rem;
+                padding: 12px 15px;
+            }
+
+            .subject-name {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+
+            .student-credit {
+                font-size: 0.8rem;
+                padding: 8px 15px;
+            }
+
+            .lecture-card {
+                padding: 20px 15px;
+            }
+
+            .lecture-icon {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .lecture-number {
+                font-size: 0.85rem;
+            }
+
+            .lecture-title {
+                font-size: 0.95rem;
+            }
+
+            .quiz-container {
+                padding: 15px 12px;
+            }
+
+            .quiz-title {
+                font-size: 1.2rem;
+            }
+
+            .question-text {
+                font-size: 0.95rem;
+            }
+
+            .option-btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .results-chart-wrapper {
+                max-width: 200px;
+            }
+
+            .results-score {
+                font-size: 2rem;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .lecture-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .lecture-card:last-child {
+                grid-column: span 2;
+                max-width: 350px;
+            }
+
+            .results-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-container light-mode" id="app">
+   <div class="top-controls"><button class="control-btn" id="themeToggle" title="تبديل الوضع">☀️</button> <button class="control-btn" id="fullscreenToggle" title="ملء الشاشة">⛶</button>
+   </div>
+   <div class="header">
+    <h1 class="platform-title" id="platformTitle">منصة QDU للاختبار التفاعلي</h1>
+    <p class="subject-name" id="subjectName">مادة الاجهزة الشعاعية</p>
+    <p class="student-credit">إعداد الطالب: <span id="studentName">مقتدى الكناني</span></p>
+   </div>
+   <div class="content-wrapper">
+    <div id="lectureSelection">
+     <div class="lecture-grid" id="lectureGrid"></div>
+    </div>
+    <div id="quizSection" class="hidden">
+     <div class="quiz-container">
+      <div class="quiz-header">
+       <h2 class="quiz-title" id="quizTitle"></h2>
+       <div class="progress-bar">
+        <div class="progress-fill" id="progressBar"></div>
+       </div>
+       <p style="margin-top: 10px; font-size: 1rem;" id="questionCounter"></p>
+      </div>
+      <div class="question-section" id="questionSection"></div>
+     </div>
+    </div>
+    <div id="resultsSection" class="hidden">
+     <div class="quiz-container">
+      <div class="results-container">
+       <h2 style="font-size: 2rem; margin-bottom: 15px; font-family: 'Tajawal', sans-serif;">النتيجة النهائية</h2>
+       <div class="results-chart-wrapper">
+        <svg viewbox="0 0 200 200" class="circular-progress"><defs>
+          <lineargradient id="failGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color:#eb3349;stop-opacity:1" />
+           <stop offset="100%" style="stop-color:#f45c43;stop-opacity:1" />
+          </lineargradient>
+          <lineargradient id="passGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color:#00b09b;stop-opacity:1" />
+           <stop offset="100%" style="stop-color:#96c93d;stop-opacity:1" />
+          </lineargradient>
+          <lineargradient id="excellentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+           <stop offset="0%" style="stop-color:#f6d365;stop-opacity:1" />
+           <stop offset="100%" style="stop-color:#fda085;stop-opacity:1" />
+          </lineargradient>
+         </defs> <circle class="progress-ring-bg" cx="100" cy="100" r="85"></circle> <circle class="progress-ring" id="progressRing" cx="100" cy="100" r="85" stroke-dasharray="534" stroke-dashoffset="534"></circle>
+        </svg>
+        <div class="results-center-content">
+         <div class="results-score" id="finalScore">
+          0%
+         </div>
+         <div class="results-label">
+          النسبة المئوية
+         </div>
+        </div>
+       </div>
+       <div class="performance-badge" id="performanceBadge"></div>
+       <div class="results-stats">
+        <div class="stat-card correct-card">
+         <div class="stat-icon">
+          ✅
+         </div>
+         <div class="stat-value" id="correctAnswers">
+          0
+         </div>
+         <div class="stat-label">
+          إجابات صحيحة
+         </div>
+        </div>
+        <div class="stat-card wrong-card">
+         <div class="stat-icon">
+          ❌
+         </div>
+         <div class="stat-value" id="wrongAnswers">
+          0
+         </div>
+         <div class="stat-label">
+          إجابات خاطئة
+         </div>
+        </div>
+        <div class="stat-card total-card">
+         <div class="stat-icon">
+          📊
+         </div>
+         <div class="stat-value" id="totalQuestions">
+          0
+         </div>
+         <div class="stat-label">
+          مجموع الأسئلة
+         </div>
+        </div>
+       </div>
+       <p class="results-message" id="resultsMessage"></p>
+       <div class="action-buttons"><button class="action-btn primary-btn" id="reviewBtn">مراجعة الاختبار</button> <button class="action-btn secondary-btn" id="backToLectures">العودة للمحاضرات</button>
+       </div>
+       <div id="reviewContainer" class="hidden review-section"></div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            platform_title: "منصة QDU للاختبار التفاعلي",
+            subject_name: "مادة الفحوصات الشعاعية",
+            student_name: "مقتدى الكناني"
+        };
+
+        const lectures = [
+            {
+                id: 1,
+                title: "محاضرة 1",
+                icon: "📘",
+                number: "",
+                questions: [
+{
+    question: "Q1- Within medical imaging departments, general radiography is often referred to as:",
+    translation: "داخل أقسام التصوير الطبي، التصوير الشعاعي العام غالباً ما يشار إليه بـ:",
+    options: ["A. Plain anatomy", "B. Projectional film", "C. X-ray", "D. Shadow imaging", "E. Differential absorption"],
+    correct: 2,
+    explanation: "لأن التصوير الشعاعي العام يُعرف غالباً بالأشعة السينية (X-ray) داخل الأقسام."
+},
+{
+    question: "Q2- Which of the following is considered the basis for various imaging methods used in diagnostic radiology?",
+    translation: "أي من التالي يعتبر الأساس لطرق التصوير المختلفة المستخدمة في الأشعة التشخيصية؟",
+    options: ["A. Differential absorption of X-rays in tissues", "B. Refinement of X-ray tube designs", "C. Use of non-digital traditional film", "D. Positioning of the overhead crane", "E. Motorized movement of the patient couch"],
+    correct: 0,
+    explanation: "لأن الامتصاص التفاضلي للأشعة في الأنسجة هو الأساس لطرق التصوير المختلفة."
+},
+{
+    question: "Q3- the principles involved in the production of X-rays have:",
+    translation: "المبادئ المتعلقة بإنتاج الأشعة السينية:",
+    options: ["A. Changed significantly since 1895", "B. Been replaced by digital sensors", "C. Become obsolete in modern radiology", "D. Evolved into three-dimensional cross-sections", "E. Remained the same since their discovery"],
+    correct: 4,
+    explanation: "لأن مبادئ إنتاج الأشعة السينية بقيت نفسها منذ اكتشافها."
+},
+{
+    question: "Q4- Beyond medical applications, X-ray machines are utilized for all the following EXCEPT:",
+    translation: "بعيداً عن التطبيقات الطبية، أجهزة الأشعة السينية تستخدم لكل ما يلي ما عدا:",
+    options: ["A. X-ray fluorescence", "B. Ultrasonic structural analysis", "C. Electronic assembly inspection", "D. Material thickness measurement", "E. Manufacturing operations"],
+    correct: 1,
+    explanation: "لأن تحليل البنية بالموجات فوق الصوتية (ultrasonic) مو من استخدامات أجهزة الأشعة السينية."
+},
+{
+    question: "Q5- In medical applications, the primary role of radiographers using X-ray machines is to:",
+    translation: "في التطبيقات الطبية، الدور الأساسي لأخصائيي الأشعة باستخدام أجهزة الأشعة السينية هو:",
+    options: ["A. Measure bone mineral density only", "B. Perform real-time continuous imaging", "C. Repair the high-voltage generator", "D. Acquire images of internal structures", "E. Adjust the overhead crane assembly"],
+    correct: 3,
+    explanation: "لأن دورهم الأساسي هو الحصول على صور للتراكيب الداخلية."
+},
+{
+    question: "Q6- X-ray machines are usually identified according to either the energy they produce or the:",
+    translation: "أجهزة الأشعة السينية عادةً تُصنف حسب الطاقة التي تنتجها أو حسب:",
+    options: ["A. Type of crane assembly used", "B. Purpose for which they are identified", "C. Thickness of the examination couch", "D. Location of the protective barrier", "E. Number of electrons in the filament"],
+    correct: 1,
+    explanation: "لأنها تُصنف حسب الطاقة أو الغرض (الهدف) من استخدامها."
+},
+{
+    question: "Q7- What component permits the easy positioning and aiming of the radiographic X-ray beam?",
+    translation: "أي جزء يسمح بسهولة تحديد وتوجيه حزمة الأشعة السينية الشعاعية؟",
+    options: ["A. Floating patient couch", "B. Carbon fiber tray", "C. Motorized U-arm", "D. Overhead movable crane assembly", "E. Adjoining control console"],
+    correct: 3,
+    explanation: "لأن مجموعة الرافعة المتحركة العلوية (overhead crane) تسمح بتوجيه الحزمة بسهولة."
+},
+{
+    question: "Q8- Which of the following is a mandatory requirement for any type of X-ray imaging system used?",
+    translation: "أي من التالي هو شرط إلزامي لأي نوع من أنظمة التصوير بالأشعة السينية المستخدمة؟",
+    options: ["A. Patient-supporting examination couch", "B. Floor-mounted stationary unit", "C. Rotating U-shaped arm", "D. Digital radiography sensor", "E. Synchronous timing circuit"],
+    correct: 0,
+    explanation: "لأن طاولة الفحص الداعمة للمريض (examination couch) شرط أساسي لأي نظام تصوير."
+},
+{
+    question: "Q9- Regarding the shape of the examination couch, the text states it may be:",
+    translation: "بخصوص شكل طاولة الفحص، النص يذكر أنها قد تكون:",
+    options: ["A. Exclusively flat", "B. Exclusively curved", "C. Circular or rectangular", "D. Transparent or opaque", "E. Flat or curved"],
+    correct: 4,
+    explanation: "لأن الطاولة قد تكون مسطحة أو منحنية (flat or curved)."
+},
+{
+    question: "Q10- To ensure high-quality imaging, the examination couch must be uniform in thickness and:",
+    translation: "لضمان تصوير عالي الجودة، طاولة الفحص يجب أن تكون موحدة السمك و:",
+    options: ["A. Motorized for rapid movement", "B. Constructed of heavy metal", "C. Transparent to x-rays as possible", "D. Curved to match anatomy", "E. Electrically connected to the console"],
+    correct: 2,
+    explanation: "لأنها يجب أن تكون شفافة للأشعة قدر الإمكان."
+},
+{
+    question: "Q11- What is the primary advantage of using carbon fiber in the construction of patient couches?",
+    translation: "ما هي الميزة الأساسية لاستخدام ألياف الكربون في بناء طاولات المرضى؟",
+    options: ["A. It increases the kVp output", "B. It eliminates the need for a grid", "C. It allows for motorized rotation", "D. It is heavier and more stable", "E. It contributes to reduced patient dose"],
+    correct: 4,
+    explanation: "لأن استخدام ألياف الكربون يساهم في تقليل جرعة المريض."
+},
+{
+    question: "Q12- A patient couch that is easily unlocked and moved by the radiologic technologist is described as:",
+    translation: "طاولة مريض يمكن فتح قفلها وتحريكها بسهولة من قبل فني الأشعة توصف بأنها:",
+    options: ["A. Stationary", "B. Motor driven", "C. Floating", "D. Ceiling-mounted", "E. Portable"],
+    correct: 2,
+    explanation: "لأن الطاولة التي تتحرك بسهولة تسمى طاولة عائمة (floating)."
+},
+{
+    question: "Q13- The opening located just under the examination couch is designed to hold a:",
+    translation: "الفتحة الموجودة تحت طاولة الفحص مباشرة مصممة لحمل:",
+    options: ["A. High-voltage generator", "B. Cassette and grid", "C. Voltmeter and switch", "D. Filament circuit", "E. Capacitor and resistor"],
+    correct: 1,
+    explanation: "لأنها مصممة لحمل الكاسيت والشبكة (grid)."
+},
+{
+    question: "Q14- The function of the X-ray machine is to provide a sufficient intensity of _________ in a controlled manner.",
+    translation: "وظيفة جهاز الأشعة السينية هي توفير شدة كافية من _________ بطريقة مضبوطة.",
+    options: ["A. Photon fluence", "B. X-ray wavelength", "C. Voltage potential", "D. Electron flow", "E. Atomic composition"],
+    correct: 3,
+    explanation: "لأنه يوفر تدفق إلكتروني (electron flow) بشدة كافية وبطريقة مضبوطة."
+},
+{
+    question: "Q15- Conventional radiography produces images of anatomy that are technically:",
+    translation: "التصوير الشعاعي التقليدي ينتج صوراً للتشريح تكون تقنياً:",
+    options: ["A. Shadowgrams", "B. Holograms", "C. Sonograms", "D. Tomograms", "E. Scintigrams"],
+    correct: 0,
+    explanation: "لأن الصور التقليدية هي صور ظلية (shadowgrams)."
+},
+{
+    question: "Q16- In an X-ray imaging system, X-rays are produced in a region that is:",
+    translation: "في نظام التصوير بالأشعة السينية، الأشعة تنتج في منطقة تعتبر:",
+    options: ["A. A large planar surface", "B. A rotating cylindrical tube", "C. A diffused gaseous cloud", "D. Nearly a point source", "E. A continuous linear array"],
+    correct: 3,
+    explanation: "لأن الأشعة تنتج من مصدر نقطي تقريباً (point source)."
+},
+{
+    question: "Q17- The brightness of each point in a two-dimensional X-ray image is related to the:",
+    translation: "سطوع كل نقطة في الصورة الثنائية الأبعاد يتعلق بـ:",
+    options: ["A. Speed of the electrons", "B. Intensity of X-rays at that point", "C. Temperature of the filament", "D. Thickness of the carbon fiber", "E. Accuracy of the mechanical timer"],
+    correct: 1,
+    explanation: "لأن السطوع يتعلق بشدة الأشعة عند تلك النقطة."
+},
+{
+    question: "Q18- Image production relies on the fact that different parts of the anatomy:",
+    translation: "إنتاج الصورة يعتمد على حقيقة أن أجزاء الجسم المختلفة:",
+    options: ["A. Absorb different amounts of x-rays", "B. Reflect x-rays at various angles", "C. Emit their own radiation", "D. Conduct electron flow differently", "E. Vibrate at different frequencies"],
+    correct: 0,
+    explanation: "لأن الأجزاء المختلفة تمتص كميات مختلفة من الأشعة."
+},
+{
+    question: "Q19- High-power, stationary units located in dedicated rooms are classified as:",
+    translation: "الأجهزة الثابتة عالية الطاقة الموجودة في غرف مخصصة تُصنف كـ:",
+    options: ["A. Mobile systems", "B. Portable machines", "C. Fixed X-ray systems", "D. C-arm systems", "E. Dental systems"],
+    correct: 2,
+    explanation: "لأنها أنظمة أشعة ثابتة (fixed systems)."
+},
+{
+    question: "Q20- Which type of X-ray system is motorized and wheel-based for use in hospital wards?",
+    translation: "أي نوع من أنظمة الأشعة يكون مزوداً بمحرك وعجلات للاستخدام في أجنحة المستشفى؟",
+    options: ["A. Fixed system", "B. Portable machine", "C. U-arm system", "D. Mammography system", "E. Mobile X-ray system"],
+    correct: 4,
+    explanation: "لأن النظام المتحرك (mobile) هو المزود بعجلات ومحرك."
+},
+{
+    question: "Q21- Portable X-ray machines are specifically designed to be:",
+    translation: "أجهزة الأشعة المحمولة مصممة خصيصاً لتكون:",
+    options: ["A. Compact, lightweight, and hand-carried", "B. Floor-mounted or ceiling-mounted", "C. Used for real-time fluoroscopy", "D. Powered by a synchronous motor", "E. Housed in an adjoining room"],
+    correct: 0,
+    explanation: "لأنها مدمجة وخفيفة ويمكن حملها باليد."
+},
+{
+    question: "Q22- Which technology utilizes digital sensors for immediate image acquisition?",
+    translation: "أي تقنية تستخدم حساسات رقمية للحصول على الصورة فوراً؟",
+    options: ["A. Traditional radiography", "B. Analog film imaging", "C. Plain film radiography", "D. Fluoroscopy systems", "E. Digital Radiography (DR)"],
+    correct: 4,
+    explanation: "لأن التصوير الرقمي (DR) يستخدم حساسات رقمية."
+},
+{
+    question: "Q23- The primary function of Computed Tomography (CT) scanners is to produce:",
+    translation: "الوظيفة الأساسية لأجهزة التصوير المقطعي المحوسب (CT) هي إنتاج:",
+    options: ["A. Real-time shadowgrams", "B. Low-dose breast images", "C. 3D, cross-sectional images", "D. Intraoral dental views", "E. Bone mineral density measurements"],
+    correct: 2,
+    explanation: "لأنها تنتج صوراً مقطعية ثلاثية الأبعاد."
+},
+{
+    question: "Q24- Which system provides real-time, continuous X-ray imaging?",
+    translation: "أي نظام يوفر تصويراً بالأشعة السينية مستمراً وفي الوقت الحقيقي؟",
+    options: ["A. Mammography", "B. Fluoroscopy", "C. DEXA", "D. U-arm", "E. Fixed radiography"],
+    correct: 1,
+    explanation: "لأن التنظير الفلوري (fluoroscopy) يوفر تصويراً مستمراً."
+},
+{
+    question: "Q25- A mobile fluoroscopy machine used specifically in operating rooms is known as a:",
+    translation: "جهاز تنظير فلوري متحرك يستخدم خصيصاً في غرف العمليات يعرف بـ:",
+    options: ["A. U-arm system", "B. CT scanner", "C. Digital sensor", "D. C-arm system", "E. Portable unit"],
+    correct: 3,
+    explanation: "لأنه نظام C-arm المستخدم في العمليات."
+},
+{
+    question: "Q26- In a U-arm system, the tube and detector are mounted on a:",
+    translation: "في نظام U-arm، الأنبوب والكاشف مثبتان على:",
+    options: ["A. Stationary ceiling crane", "B. Hand-carried frame", "C. Rotating U-shaped arm", "D. Motorized wheel base", "E. Floating couch assembly"],
+    correct: 2,
+    explanation: "لأنهما مثبتان على ذراع دوارة على شكل حرف U."
+},
+{
+    question: "Q27- Mammography systems are specialized, low-dose systems used for:",
+    translation: "أنظمة الماموغرافي هي أنظمة متخصصة منخفضة الجرعة تستخدم لـ:",
+    options: ["A. Breast imaging", "B. Bone density measurement", "C. Real-time surgery", "D. Panoramic dental views", "E. Field trauma imaging"],
+    correct: 0,
+    explanation: "لأنها تستخدم لتصوير الثدي."
+},
+{
+    question: "Q28- Dental X-ray machines used for panoramic or cephalometric imaging are classified as:",
+    translation: "أجهزة الأشعة السينية للأسنان المستخدمة للتصوير البانورامي أو الرأسي تُصنف كـ:",
+    options: ["A. Intraoral", "B. Fluoroscopic", "C. CT-based", "D. Fixed-mounted", "E. Extraoral"],
+    correct: 4,
+    explanation: "لأنها تصنف كأجهزة خارج الفم (extraoral)."
+},
+{
+    question: "Q29- What is the specific clinical application of a DEXA scanner?",
+    translation: "ما هو التطبيق السريري المحدد لجهاز DEXA؟",
+    options: ["A. Real-time blood flow imaging", "B. Cross-sectional anatomy", "C. Breast tissue screening", "D. Measuring bone mineral density", "E. Inspecting electronic assemblies"],
+    correct: 3,
+    explanation: "لأن DEXA يستخدم لقياس كثافة العظام."
+},
+{
+    question: "Q30- Every X-ray machine, regardless of design, consists of three principle parts: the control console, the X-ray tube, and the:",
+    translation: "كل جهاز أشعة سينية، بغض النظر عن تصميمه، يتكون من ثلاثة أجزاء رئيسية: وحدة التحكم، أنبوب الأشعة، و:",
+    options: ["A. Floating couch", "B. High-voltage generator", "C. Overhead crane", "D. Carbon fiber tray", "E. Cassette and grid"],
+    correct: 1,
+    explanation: "لأن الأجزاء الثلاثة هي وحدة التحكم، الأنبوب، ومولد الجهد العالي."
+},
+{
+    question: "Q31- In which types of X-ray apparatus are the three principle components housed compactly?",
+    translation: "في أي أنواع أجهزة الأشعة تكون المكونات الثلاثة الرئيسية مدمجة بشكل مضغوط؟",
+    options: ["A. Fixed and C-arm systems", "B. Mammography and DEXA", "C. CT and Fluoroscopy", "D. U-arm and Stationary", "E. Dental and portable machines"],
+    correct: 4,
+    explanation: "لأن الأجهزة السنية والمحمولة تكون مدمجة."
+},
+{
+    question: "Q32- In a standard X-ray suite, the control console is typically located in:",
+    translation: "في غرفة الأشعة القياسية، وحدة التحكم تكون عادةً في:",
+    options: ["A. The same room as the tube", "B. A protective lead box", "C. An adjoining room", "D. The basement of the hospital", "E. The mobile wheel base"],
+    correct: 2,
+    explanation: "لأنها تكون في غرفة مجاورة (adjoining room)."
+},
+{
+    question: "Q33- During an exam, the radiologic technologist uses the control console primarily to:",
+    translation: "أثناء الفحص، فني الأشعة يستخدم وحدة التحكم بشكل أساسي لـ:",
+    options: ["A. Move the patient couch", "B. Select X-ray techniques", "C. Position the overhead crane", "D. Develop the analog film", "E. Measure material thickness"],
+    correct: 1,
+    explanation: "لأنه يستخدمها لاختيار تقنيات التصوير."
+},
+{
+    question: "Q34- The \"cockpit\" of the X-ray machine that allows control of voltage, current, and time is the:",
+    translation: "مقصورة القيادة لجهاز الأشعة التي تسمح بالتحكم بالجهد والتيار والوقت هي:",
+    options: ["A. Operating console", "B. High-voltage generator", "C. Filament circuit", "D. X-ray tube head", "E. Autotransformer"],
+    correct: 0,
+    explanation: "لأن وحدة التشغيل (operating console) هي التي تتحكم بهذه العوامل."
+},
+{
+    question: "Q35- Beam quantity refers to the number of X-ray photons, while beam quality refers to:",
+    translation: "كمية الحزمة تشير إلى عدد فوتونات الأشعة، بينما جودة الحزمة تشير إلى:",
+    options: ["A. The size of the point source", "B. The brightness of the image", "C. The speed of the crane", "D. The effective energy of photons", "E. The thickness of the couch"],
+    correct: 3,
+    explanation: "لأن جودة الحزمة تشير إلى الطاقة الفعالة للفوتونات."
+},
+{
+    question: "Q36- Which of the following is NOT typically controlled directly from the operating console?",
+    translation: "أي من التالي لا يتم التحكم به مباشرة من وحدة التشغيل؟",
+    options: ["A. Line compensation", "B. Tube vacuum pressure", "C. kVp adjustment", "D. mA control", "E. Exposure time"],
+    correct: 1,
+    explanation: "لأن ضغط الفراغ للأنبوب لا يتحكم به من وحدة التشغيل."
+},
+{
+    question: "Q37- The operating console is connected to the rest of the X-ray machine:",
+    translation: "وحدة التشغيل متصلة ببقية جهاز الأشعة:",
+    options: ["A. Mechanically via gears", "B. Through a wireless sensor", "C. By a hydraulic system", "D. Electrically as a separate unit", "E. Directly inside the tube head"],
+    correct: 3,
+    explanation: "لأنها متصلة كهربائياً كوحدة منفصلة."
+},
+{
+    question: "Q38- Adjustments of kVp, mA, and exposure time are achieved through _________ contained in the console.",
+    translation: "تعديلات kVp و mA ووقت التعريض تتم عبر _________ موجودة في وحدة التحكم.",
+    options: ["A. Meters and switches", "B. Springs and knobs", "C. Belts and pulleys", "D. Digital sensors and grids", "E. Capacitors and resistors"],
+    correct: 0,
+    explanation: "لأنها تتم عبر عدادات ومفاتيح."
+},
+{
+    question: "Q39- The capability to select different techniques is provided by electrical circuits and:",
+    translation: "القدرة على اختيار تقنيات مختلفة توفرها الدوائر الكهربائية و:",
+    options: ["A. Mechanical timers", "B. Synchronous motors", "C. Floating couches", "D. Overhead cranes", "E. Voltage transformers"],
+    correct: 4,
+    explanation: "لأن محولات الجهد (voltage transformers) توفر هذه القدرة."
+},
+{
+    question: "Q40- What is the primary purpose of the line compensation system?",
+    translation: "ما هو الغرض الأساسي من نظام تعويض الخط؟",
+    options: ["A. To increase the photon fluence", "B. To rotate the U-arm assembly", "C. To compensate incoming voltage", "D. To charge the electronic capacitor", "E. To measure bone mineral density"],
+    correct: 2,
+    explanation: "لأنه يعوض الجهد الداخل (incoming voltage)."
+},
+{
+    question: "Q41- While some X-ray machines can operate on 110 V or 440 V, most are designed for:",
+    translation: "بينما بعض أجهزة الأشعة تعمل على 110 فولت أو 440 فولت، معظمها مصمم لـ:",
+    options: ["A. 12 V", "B. 50 V", "C. 120 V", "D. 220 V", "E. 500 V"],
+    correct: 3,
+    explanation: "لأن معظمها يعمل على 220 فولت."
+},
+{
+    question: "Q42- Variation in input voltage from power companies is unacceptable because it results in:",
+    translation: "تغير جهد الدخل من شركات الكهرباء غير مقبول لأنه يؤدي إلى:",
+    options: ["A. Damage to the carbon fiber", "B. Large variation in X-ray output", "C. Slowing of the synchronous motor", "D. Overheating of the patient couch", "E. Mechanical failure of the crane"],
+    correct: 1,
+    explanation: "لأنه يؤدي إلى تباين كبير في مخرجات الأشعة."
+},
+{
+    question: "Q43- To measure the voltage provided to the unit, the line compensator incorporates a:",
+    translation: "لقياس الجهد المزود للوحدة، معوض الخط يحتوي على:",
+    options: ["A. Milliammeter", "B. mAs timer", "C. Grid tray", "D. Phototimer", "E. Voltmeter"],
+    correct: 4,
+    explanation: "لأنه يحتوي على فولتميتر (voltmeter)."
+},
+{
+    question: "Q44- The control used to adjust the incoming voltage to precisely 220 V is wired to the:",
+    translation: "أداة التحكم المستخدمة لضبط الجهد الداخل بدقة 220 فولت موصولة بـ:",
+    options: ["A. Exposure switch", "B. Filament circuit", "C. Autotransformer", "D. X-ray tube cathode", "E. Protective barrier"],
+    correct: 2,
+    explanation: "لأنها موصولة بالمحول الذاتي (autotransformer)."
+},
+{
+    question: "Q45- In most modern X-ray machines, the line compensation system is:",
+    translation: "في معظم أجهزة الأشعة الحديثة، نظام تعويض الخط يكون:",
+    options: ["A. Automatic", "B. Manual", "C. Mechanical", "D. Battery-powered", "E. Hydraulic"],
+    correct: 0,
+    explanation: "لأنه نظام تلقائي (automatic)."
+},
+{
+    question: "Q46- The kilovoltage selector on the operating console allows for:",
+    translation: "محدد كيلوفولت على وحدة التشغيل يسمح بـ:",
+    options: ["A. Control of the filament current", "B. Timing of the serial exposure", "C. Precise selection of desired kV", "D. Measurement of patient dose", "E. Movement of the overhead crane"],
+    correct: 2,
+    explanation: "لأنه يسمح باختيار دقيق للكيلوفولت المطلوب."
+},
+{
+    question: "Q47- In some machines, the kVp control is automatically linked to:",
+    translation: "في بعض الأجهزة، التحكم بـ kVp مرتبط تلقائياً بـ:",
+    options: ["A. The couch height", "B. The crane position", "C. The line compensator", "D. The grid ratio", "E. A certain mA value"],
+    correct: 4,
+    explanation: "لأنه مرتبط بقيمة معينة من الميلي أمبير (mA)."
+},
+{
+    question: "Q48- On modern X-ray apparatus, the kilovoltage control is usually:",
+    translation: "في أجهزة الأشعة الحديثة، التحكم بالكيلوفولت يكون عادةً:",
+    options: ["A. Adjusted by a spring", "B. Directly calibrated", "C. Controlled by a foot pedal", "D. Fixed at a single value", "E. Linked to the room lights"],
+    correct: 1,
+    explanation: "لأنه يكون معايراً مباشرة (directly calibrated)."
+},
+{
+    question: "Q49- Production of X-rays results from the passage of _________ across the X-ray tube.",
+    translation: "إنتاج الأشعة السينية ينتج من مرور _________ عبر أنبوب الأشعة.",
+    options: ["A. High voltage current", "B. Low frequency waves", "C. Mechanical energy", "D. Visible light photons", "E. Static electricity"],
+    correct: 0,
+    explanation: "لأنه ينتج من مرور تيار عالي الجهد عبر الأنبوب."
+},
+{
+    question: "Q50- As the kilovoltage employed is increased, the electrons in the tube:",
+    translation: "كلما زاد الكيلوفولت المستخدم، الإلكترونات في الأنبوب:",
+    options: ["A. Travel more slowly", "B. Change their charge", "C. Stop before impact", "D. Travel more rapidly", "E. Increase in physical size"],
+    correct: 3,
+    explanation: "لأنها تتحرك بشكل أسرع (more rapidly)."
+},
+{
+    question: "Q51- A higher kilovoltage results in _________ energy released on impact.",
+    translation: "كيلوفولت أعلى يؤدي إلى طاقة _________ عند الاصطدام.",
+    options: ["A. Greater", "B. Lesser", "C. Zero", "D. Constant", "E. Negative"],
+    correct: 0,
+    explanation: "لأنه يؤدي إلى طاقة أكبر (greater)."
+},
+{
+    question: "Q52- The wavelength of X-rays produced is _________ when a higher kilovoltage is used.",
+    translation: "طول موجة الأشعة المنتجة يكون _________ عند استخدام كيلوفولت أعلى.",
+    options: ["A. Longer", "B. Unchanged", "C. Shorter", "D. Infinite", "E. Doubled"],
+    correct: 2,
+    explanation: "لأن الطول الموجي يصبح أقصر (shorter)."
+},
+{
+    question: "Q53- X-rays characterized by short wavelength and high frequency are described as:",
+    translation: "الأشعة السينية التي تتميز بطول موجة قصير وتردد عالٍ توصف بأنها:",
+    options: ["A. Soft X-rays", "B. Secondary X-rays", "C. Scatter radiation", "D. Diffused X-rays", "E. Hard X-rays"],
+    correct: 4,
+    explanation: "لأنها أشعة صلبة (hard X-rays)."
+},
+{
+    question: "Q54- Conversely, X-rays with a longer wavelength and low frequency are referred to as:",
+    translation: "بالمقابل، الأشعة السينية ذات الطول الموجي الأطول والتردد المنخفض يشار إليها بـ:",
+    options: ["A. Hard", "B. Soft", "C. Penetrating", "D. Primary", "E. Focal"],
+    correct: 1,
+    explanation: "لأنها أشعة لينة (soft)."
+},
+{
+    question: "Q55- Which separate circuit is responsible for controlling the X-ray tube current?",
+    translation: "أي دائرة منفصلة مسؤولة عن التحكم بتيار أنبوب الأشعة؟",
+    options: ["A. High-voltage circuit", "B. Line compensator circuit", "C. Timing circuit", "D. Filament circuit", "E. Synchronous circuit"],
+    correct: 3,
+    explanation: "لأن دائرة الفتيل (filament circuit) تتحكم بتيار الأنبوب."
+},
+{
+    question: "Q56- Which instrument indicates the current passing through the tube during an actual exposure?",
+    translation: "أي جهاز يشير إلى التيار المار خلال الأنبوب أثناء التعريض الفعلي؟",
+    options: ["A. Voltmeter", "B. Milliammeter", "C. Photometer", "D. Ohmmeter", "E. Chronometer"],
+    correct: 1,
+    explanation: "لأن الملي أميتر (milliammeter) يشير إلى التيار."
+},
+{
+    question: "Q57- The voltage for the filament circuit is provided from:",
+    translation: "الجهد لدائرة الفتيل يتم توفيره من:",
+    options: ["A. The exposure switch", "B. The protective barrier", "C. The mechanical spring", "D. Taps of the autotransformer", "E. The electronic capacitor"],
+    correct: 3,
+    explanation: "لأنه من نقاط المحول الذاتي (autotransformer)."
+},
+{
+    question: "Q58- The significance of milliamperage (mA) in radiography is that it affects the:",
+    translation: "أهمية الميلي أمبير (mA) في التصوير الشعاعي هي أنه يؤثر على:",
+    options: ["A. Amount of X-rays produced", "B. Speed of electron travel", "C. Energy of the photons", "D. Wavelength of the beam", "E. Precision of the timer"],
+    correct: 0,
+    explanation: "لأنه يؤثر على كمية الأشعة المنتجة."
+},
+{
+    question: "Q59- The total amount of radiation is best expressed in:",
+    translation: "الكمية الكلية للإشعاع تعبر عنها بشكل أفضل بـ:",
+    options: ["A. kVp-seconds", "B. Volts per meter", "C. Milliampere-seconds (mAs)", "D. Ohms per second", "E. Watts per mA"],
+    correct: 2,
+    explanation: "لأنها تعبر بوحدة ميلي أمبير-ثانية (mAs)."
+},
+{
+    question: "Q60- The number of electrons available to carry tube current varies with the current supplied to the:",
+    translation: "عدد الإلكترونات المتاحة لحمل تيار الأنبوب يتغير مع التيار المزود إلى:",
+    options: ["A. Anode", "B. Autotransformer", "C. Voltmeter", "D. Exposure button", "E. Filament"],
+    correct: 4,
+    explanation: "لأنه يتغير مع التيار المزود للفتيل (filament)."
+},
+{
+    question: "Q61- Which of the following is directly related to the quantity of X-rays produced?",
+    translation: "أي من التالي مرتبط مباشرة بكمية الأشعة المنتجة؟",
+    options: ["A. Tube voltage (kVp)", "B. Couch thickness", "C. Crane assembly speed", "D. Barrier density", "E. Tube current (mA)"],
+    correct: 4,
+    explanation: "لأن تيار الأنبوب (mA) مرتبط مباشرة بكمية الأشعة."
+},
+{
+    question: "Q62- In summary, kilovoltage primarily affects beam quality, while milliamperage (mAs) affects:",
+    translation: "باختصار، الكيلوفولت يؤثر بشكل أساسي على جودة الحزمة، بينما الميلي أمبير (mAs) يؤثر على:",
+    options: ["A. Beam frequency", "B. Electron speed", "C. Beam quantity", "D. Wavelength", "E. Photon energy"],
+    correct: 2,
+    explanation: "لأن الـ mAs يؤثر على كمية الحزمة (beam quantity)."
+},
+{
+    question: "Q63- X-ray exposure timers are located in the _________ circuit of the X-ray machine.",
+    translation: "مؤقتات التعريض للأشعة السينية موجودة في دائرة _________ لجهاز الأشعة.",
+    options: ["A. Low-voltage", "B. High-voltage", "C. Filament", "D. Line compensation", "E. Grounding"],
+    correct: 1,
+    explanation: "لأنها في دائرة الجهد العالي (high-voltage)."
+},
+{
+    question: "Q64- The primary function of the exposure timer is to regulate the:",
+    translation: "الوظيفة الأساسية لمؤقت التعريض هي تنظيم:",
+    options: ["A. Total number of photons produced", "B. Effective energy of the beam", "C. Speed of the overhead crane", "D. Temperature of the filament", "E. Input voltage to the unit"],
+    correct: 0,
+    explanation: "لأنه ينظم العدد الكلي للفوتونات المنتجة."
+},
+{
+    question: "Q65- Timers control the length of time that current flows through the tube, which directly impacts:",
+    translation: "المؤقتات تتحكم بمدة تدفق التيار عبر الأنبوب، مما يؤثر مباشرة على:",
+    options: ["A. Patient couch height", "B. Line voltage stability", "C. Crane aiming accuracy", "D. Image receptor exposure", "E. Barrier thickness"],
+    correct: 3,
+    explanation: "لأنه يؤثر مباشرة على تعريض مستقبل الصورة (image receptor)."
+},
+{
+    question: "Q66- The quantity of X-rays reaching the film is directly related to the tube current and the:",
+    translation: "كمية الأشعة التي تصل للفيلم مرتبطة مباشرة بتيار الأنبوب و:",
+    options: ["A. kVp value", "B. Grid tray size", "C. Exposure time", "D. Couch material", "E. Room temperature"],
+    correct: 2,
+    explanation: "لأنها مرتبطة بوقت التعريض (exposure time)."
+},
+{
+    question: "Q67- Which component starts and ends the application of high voltage across the X-ray tube electrodes?",
+    translation: "أي جزء يبدأ وينهي تطبيق الجهد العالي عبر أقطاب أنبوب الأشعة؟",
+    options: ["A. Exposure timing circuitry", "B. Line compensator", "C. Autotransformer taps", "D. Milliammeter", "E. Filament transformer"],
+    correct: 0,
+    explanation: "لأن دائرة توقيت التعريض (exposure timing) هي التي تفعل ذلك."
+},
+{
+    question: "Q68- Where is the exposure timer located, and what is it electrically connected to?",
+    translation: "أين يوجد مؤقت التعريض، وبماذا يكون متصلاً كهربائياً؟",
+    options: ["A. In the tube head; connected to the anode", "B. Under the couch; connected to the grid", "C. On the generator; connected to the line", "D. Behind the barrier; connected to the voltmeter", "E. On the control console; connected to the exposure switch"],
+    correct: 4,
+    explanation: "لأنه في وحدة التحكم ومتصل بمفتاح التعريض."
+},
+{
+    question: "Q69- Exposure duration is defined as the time:",
+    translation: "مدة التعريض تعرف بأنها الوقت:",
+    options: ["A. Required to charge the capacitor", "B. Electrons take to travel the tube", "C. The technologist takes to set kVp", "D. X-rays are being produced for image formation", "E. The spring takes to unwind"],
+    correct: 3,
+    explanation: "لأنها الوقت الذي تنتج خلاله الأشعة لتكوين الصورة."
+},
+{
+    question: "Q70- In general radiography, exposure durations are typically:",
+    translation: "في التصوير الشعاعي العام، مدة التعريض تكون عادةً:",
+    options: ["A. Extremely long (seconds)", "B. Extremely short (e.g., 100 ms)", "C. Exactly one minute", "D. Variable based on room light", "E. Continuous for several hours"],
+    correct: 1,
+    explanation: "لأنها قصيرة جداً (مثل 100 ميلي ثانية)."
+},
+{
+    question: "Q71- To achieve high photon fluence in radiography, a large tube current is used, typically:",
+    translation: "لتحقيق تدفق فوتوني عالٍ في التصوير الشعاعي، يستخدم تيار أنبوب عالٍ، عادةً:",
+    options: ["A. 1–10 mA", "B. 50–100 mA", "C. 150–180 mA", "D. 200–1,000 mA", "E. Over 5,000 mA"],
+    correct: 3,
+    explanation: "لأن التيار يتراوح بين 200-1000 ميلي أمبير."
+},
+{
+    question: "Q72- The use of an electronic timer helps preserve image quality by reducing:",
+    translation: "استخدام المؤقت الإلكتروني يساعد في الحفاظ على جودة الصورة بتقليل:",
+    options: ["A. X-ray wavelength", "B. Patient motion artifacts", "C. Filament temperature", "D. Line voltage variation", "E. Couch absorption"],
+    correct: 1,
+    explanation: "لأنه يقلل من تشوهات حركة المريض."
+},
+{
+    question: "Q73- How many basic types of timing circuits are identified in the text?",
+    translation: "كم عدد الأنواع الأساسية لدوائر التوقيت المذكورة في النص؟",
+    options: ["A. Five", "B. Three", "C. Seven", "D. Two", "E. Ten"],
+    correct: 0,
+    explanation: "لأن النص يذكر خمسة أنواع أساسية."
+},
+{
+    question: "Q74- Which timer operates by clockwork and uses a winding spring?",
+    translation: "أي مؤقت يعمل بآلية الساعة ويستخدم زنبركاً؟",
+    options: ["A. Synchronous timer", "B. Electronic timer", "C. Mechanical timer", "D. mAs timer", "E. AEC phototimer"],
+    correct: 2,
+    explanation: "لأن المؤقت الميكانيكي (mechanical) يعمل بزنبرك."
+},
+{
+    question: "Q75- Mechanical timers are considered inexpensive but are _________ by modern standards.",
+    translation: "المؤقتات الميكانيكية تعتبر رخيصة لكنها _________ بمعايير اليوم.",
+    options: ["A. Highly precise", "B. Fully automatic", "C. Extremely expensive", "D. Digitally controlled", "E. Not very accurate"],
+    correct: 4,
+    explanation: "لأنها ليست دقيقة جداً (not very accurate)."
+},
+{
+    question: "Q76- A synchronous timer is a precision device driven by a motor that operates at:",
+    translation: "المؤقت المتزامن هو جهاز دقيق يعمل بمحرك يعمل بـ:",
+    options: ["A. 10 revolutions per second", "B. 60 revolutions per second", "C. 100 revolutions per minute", "D. 1,000 pulses per ms", "E. Variable speeds"],
+    correct: 1,
+    explanation: "لأنه يعمل بـ 60 دورة في الثانية."
+},
+{
+    question: "Q77- Synchronous timers are most commonly found in:",
+    translation: "المؤقتات المتزامنة توجد بشكل شائع في:",
+    options: ["A. Modern DR systems", "B. CT scanners", "C. Mammography units", "D. Older machines", "E. Portable field units"],
+    correct: 3,
+    explanation: "لأنها توجد في الأجهزة القديمة."
+},
+{
+    question: "Q78- Which type of timer is described as the most expensive, complicated, and accurate?",
+    translation: "أي نوع من المؤقتات يوصف بأنه الأغلى والأعقد والأدق؟",
+    options: ["A. Electronic timer", "B. Mechanical timer", "C. Synchronous timer", "D. Manual timer", "E. Spring-loaded timer"],
+    correct: 0,
+    explanation: "لأن المؤقت الإلكتروني هو الأغلى والأدق."
+},
+{
+    question: "Q79- The circuitry of an electronic timer is based on the time required to:",
+    translation: "دائرة المؤقت الإلكتروني تعتمد على الوقت اللازم لـ:",
+    options: ["A. Unwind a clockwork spring", "B. Rotate a motor 60 times", "C. Heat the filament to peak", "D. Move the crane assembly", "E. Charge a capacitor through a variable resistance"],
+    correct: 4,
+    explanation: "لأنه يعتمد على شحن مكثف عبر مقاومة متغيرة."
+},
+{
+    question: "Q80- Because they allow for a wide range of intervals, electronic timers are suitable for:",
+    translation: "لأنها تسمح بمجموعة واسعة من الفترات، المؤقتات الإلكترونية مناسبة لـ:",
+    options: ["A. Measuring bone density", "B. Moving the floating couch", "C. Making serial exposures", "D. Adjusting line compensation", "E. Cooling the X-ray tube"],
+    correct: 2,
+    explanation: "لأنها مناسبة للتعريضات المتسلسلة (serial exposures)."
+},
+{
+    question: "Q81- Which specific timer monitors the product of mA and time to terminate exposure?",
+    translation: "أي مؤقت محدد يراقب حاصل ضرب mA والوقت لإنهاء التعريض؟",
+    options: ["A. mAs timer", "B. kVp timer", "C. Mechanical timer", "D. Synchronous timer", "E. Voltmeter timer"],
+    correct: 0,
+    explanation: "لأن مؤقت mAs هو اللي يراقب حاصل ضرب التيار والوقت."
+},
+{
+    question: "Q82- The mAs timer terminates the exposure once:",
+    translation: "مؤقت mAs ينهي التعريض بمجرد:",
+    options: ["A. The capacitor is fully drained", "B. The spring is completely unwound", "C. The desired mAs is attained", "D. The motor reaches 60 RPM", "E. The kVp reaches its peak"],
+    correct: 2,
+    explanation: "لأنه ينهي التعريض عند الوصول لقيمة mAs المطلوبة."
+},
+{
+    question: "Q83- AEC stands for Automatic Exposure Control, which is also commonly known as:",
+    translation: "AEC تعني التحكم التلقائي بالتعريض، والتي تعرف أيضاً بـ:",
+    options: ["A. Autotransformer", "B. Milliammeter", "C. Phototimer", "D. Line compensator", "E. Synchronous motor"],
+    correct: 2,
+    explanation: "لأن AEC تعرف أيضاً بـ phototimer."
+},
+{
+    question: "Q84- The function of an AEC device is to measure the:",
+    translation: "وظيفة جهاز AEC هي قياس:",
+    options: ["A. Speed of the electrons", "B. Quantity of radiation reaching the image receptor", "C. Voltage of the filament circuit", "D. Thickness of the carbon fiber couch", "E. Wavelength of the hard X-rays"],
+    correct: 1,
+    explanation: "لأنه يقيس كمية الإشعاع التي تصل للمستقبل."
+},
+{
+    question: "Q85- An AEC timer automatically terminates the exposure when:",
+    translation: "مؤقت AEC ينهي التعريض تلقائياً عندما:",
+    options: ["A. The technologist releases the button", "B. The line voltage drops below 220 V", "C. The capacitor reaches zero charge", "D. Sufficient radiation optical density is reached", "E. The mechanical knob returns to zero"],
+    correct: 3,
+    explanation: "لأنه ينهيه عند الوصول لكثافة بصرية كافية."
+},
+{
+    question: "Q86- Projectional radiography used to examine anatomy is the definition of:",
+    translation: "التصوير الشعاعي الإسقاطي المستخدم لفحص التشريح هو تعريف:",
+    options: ["A. Fluoroscopy", "B. Computed Tomography", "C. General radiography", "D. Mammography", "E. Dental imaging"],
+    correct: 2,
+    explanation: "لأنه تعريف التصوير الشعاعي العام (general radiography)."
+},
+{
+    question: "Q87- The differential absorption of X-rays in tissues is primarily due to their:",
+    translation: "الامتصاص التفاضلي للأشعة في الأنسجة يعود بشكل أساسي إلى:",
+    options: ["A. Physical thickness", "B. Atomic composition", "C. Temperature", "D. Water content", "E. Magnetic properties"],
+    correct: 1,
+    explanation: "لأنه يعود إلى تركيبها الذري (atomic composition)."
+},
+{
+    question: "Q88- In a standard X-ray machine, which component is typically separated from the console by a protective barrier?",
+    translation: "في جهاز أشعة قياسي، أي جزء يكون عادةً مفصولاً عن وحدة التحكم بحاجز وقائي؟",
+    options: ["A. The milliammeter", "B. The exposure switch", "C. The autotransformer", "D. The X-ray tube head", "E. The line compensator"],
+    correct: 3,
+    explanation: "لأن رأس أنبوب الأشعة (X-ray tube head) يكون خلف الحاجز الوقائي."
+}
+]
+            },
+        ];
+
+        let currentLecture = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let showTranslation = false;
+        let isDarkMode = false;
+
+        function preventCopyPaste() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('copy', e => e.preventDefault());
+            document.addEventListener('cut', e => e.preventDefault());
+            document.addEventListener('paste', e => e.preventDefault());
+            document.addEventListener('selectstart', e => e.preventDefault());
+            
+            document.addEventListener('keydown', e => {
+                if (
+                    (e.ctrlKey || e.metaKey) && 
+                    ['c', 'x', 'a', 'u', 's'].includes(e.key.toLowerCase())
+                ) {
+                    e.preventDefault();
+                }
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        function renderLectures() {
+            const grid = document.getElementById('lectureGrid');
+            grid.innerHTML = lectures.map(lecture => `
+                <div class="lecture-card" onclick="startQuiz(${lecture.id})">
+                    <div class="lecture-icon">${lecture.icon}</div>
+                    ${lecture.number ? `<div class="lecture-number">${lecture.number}</div>` : ''}
+                    <div class="lecture-title">${lecture.title}</div>
+                </div>
+            `).join('');
+        }
+
+        function startQuiz(lectureId) {
+            currentLecture = lectures.find(l => l.id === lectureId);
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            document.getElementById('lectureSelection').classList.add('hidden');
+            document.getElementById('quizSection').classList.remove('hidden');
+            document.getElementById('quizTitle').textContent = currentLecture.title;
+            
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const question = currentLecture.questions[currentQuestionIndex];
+            const questionSection = document.getElementById('questionSection');
+            
+            const progress = ((currentQuestionIndex + 1) / currentLecture.questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('questionCounter').textContent = 
+                `السؤال ${currentQuestionIndex + 1} من ${currentLecture.questions.length}`;
+            
+            showTranslation = false;
+            
+            questionSection.innerHTML = `
+                <div class="question-header">
+                    <div class="question-text">${question.question}</div>
+                    <button class="translate-btn" onclick="toggleTranslation()">🔤 ترجمة</button>
+                </div>
+                <div id="translationContainer"></div>
+                <div class="options-container">
+                    ${question.options.map((option, index) => `
+                        <button class="option-btn" onclick="selectAnswer(${index})">${option}</button>
+                    `).join('')}
+                </div>
+                <div id="feedbackContainer"></div>
+            `;
+        }
+
+        function toggleTranslation() {
+            showTranslation = !showTranslation;
+            const container = document.getElementById('translationContainer');
+            const question = currentLecture.questions[currentQuestionIndex];
+            
+            if (showTranslation) {
+                container.innerHTML = `<div class="translation">${question.translation}</div>`;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = currentLecture.questions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === question.correct) {
+                    btn.classList.add('correct');
+                }
+                if (index === selectedIndex && index !== question.correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            const isCorrect = selectedIndex === question.correct;
+            
+            if (isCorrect) {
+                score++;
+                setTimeout(() => {
+                    nextQuestion();
+                }, 800);
+            } else {
+                feedbackContainer.innerHTML = `
+                    <div class="feedback-box error">
+                        ${question.explanation}
+                    </div>
+                    <button class="next-btn" onclick="nextQuestion()">التالي</button>
+                `;
+            }
+            
+            userAnswers.push({
+                question: question.question,
+                userAnswer: question.options[selectedIndex],
+                correctAnswer: question.options[question.correct],
+                isCorrect: isCorrect
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < currentLecture.questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const current = Math.floor(start + range * easeOutQuart);
+                
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        function showResults() {
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            const totalQuestions = currentLecture.questions.length;
+            const wrongAnswers = totalQuestions - score;
+            const percentage = (score / totalQuestions) * 100;
+            
+            const scoreElement = document.getElementById('finalScore');
+            const messageElement = document.getElementById('resultsMessage');
+            const badgeElement = document.getElementById('performanceBadge');
+            const progressRing = document.getElementById('progressRing');
+            
+            animateValue(document.getElementById('correctAnswers'), 0, score, 1500);
+            animateValue(document.getElementById('wrongAnswers'), 0, wrongAnswers, 1500);
+            animateValue(document.getElementById('totalQuestions'), 0, totalQuestions, 1500);
+            
+            let currentPercentage = 0;
+            const percentageInterval = setInterval(() => {
+                currentPercentage += 1;
+                scoreElement.textContent = `${currentPercentage}%`;
+                
+                if (currentPercentage >= percentage) {
+                    clearInterval(percentageInterval);
+                    scoreElement.textContent = `${percentage.toFixed(0)}%`;
+                }
+            }, 20);
+            
+            const circumference = 2 * Math.PI * 85;
+            const offset = circumference - (percentage / 100) * circumference;
+            
+            setTimeout(() => {
+                progressRing.style.strokeDashoffset = offset;
+            }, 100);
+            
+            if (percentage < 50) {
+                scoreElement.className = 'results-score fail';
+                progressRing.className = 'progress-ring fail';
+                badgeElement.className = 'performance-badge badge-fail';
+                badgeElement.textContent = '❌ راسب';
+                messageElement.textContent = 'حاول مرة أخرى! التعلم يحتاج للممارسة المستمرة 💪';
+            } else if (percentage < 90) {
+                scoreElement.className = 'results-score pass';
+                progressRing.className = 'progress-ring pass';
+                badgeElement.className = 'performance-badge badge-pass';
+                badgeElement.textContent = '✅ ناجح';
+                messageElement.textContent = 'أحسنت! أداء جيد، واصل التقدم 👏';
+            } else {
+                scoreElement.className = 'results-score excellent';
+                progressRing.className = 'progress-ring excellent';
+                badgeElement.className = 'performance-badge badge-excellent';
+                badgeElement.textContent = '🌟 متفوق';
+                messageElement.textContent = 'ممتاز! أداء رائع ومتميز 🌟';
+                createConfetti();
+            }
+        }
+
+        function reviewQuiz() {
+            const reviewContainer = document.getElementById('reviewContainer');
+            reviewContainer.classList.toggle('hidden');
+            
+            if (!reviewContainer.classList.contains('hidden')) {
+                reviewContainer.innerHTML = userAnswers.map((answer, index) => `
+                    <div class="review-question">
+                        <div class="review-question-text">Question ${index + 1}: ${answer.question}</div>
+                        ${!answer.isCorrect ? `<div class="review-answer user">Your answer: ${answer.userAnswer}</div>` : ''}
+                        <div class="review-answer correct">Correct answer: ${answer.correctAnswer}</div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('reviewBtn').textContent = 'إخفاء المراجعة';
+            } else {
+                document.getElementById('reviewBtn').textContent = 'مراجعة الاختبار';
+            }
+        }
+
+        function backToLectures() {
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('lectureSelection').classList.remove('hidden');
+            
+            const canvas = document.getElementById('confettiCanvas');
+            if (canvas) canvas.remove();
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            const app = document.getElementById('app');
+            const themeBtn = document.getElementById('themeToggle');
+            
+            if (isDarkMode) {
+                app.classList.remove('light-mode');
+                app.classList.add('dark-mode');
+                themeBtn.textContent = '🌙';
+            } else {
+                app.classList.remove('dark-mode');
+                app.classList.add('light-mode');
+                themeBtn.textContent = '☀️';
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function createConfetti() {
+            const canvas = document.createElement('canvas');
+            canvas.id = 'confettiCanvas';
+            canvas.className = 'confetti-canvas';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            document.body.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * 150,
+                    color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+                    tilt: Math.floor(Math.random() * 10) - 10,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.05,
+                    tiltAngle: 0
+                });
+            }
+            
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach((p, i) => {
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r / 2;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+                    ctx.stroke();
+                    
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.tilt = Math.sin(p.tiltAngle - i / 3) * 15;
+                    
+                    if (p.y > canvas.height) {
+                        particles[i] = {
+                            ...p,
+                            x: Math.random() * canvas.width,
+                            y: -30
+                        };
+                    }
+                });
+                
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+            
+            setTimeout(() => {
+                canvas.remove();
+            }, 5000);
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('fullscreenToggle').addEventListener('click', toggleFullscreen);
+        document.getElementById('reviewBtn').addEventListener('click', reviewQuiz);
+        document.getElementById('backToLectures').addEventListener('click', backToLectures);
+
+        async function onConfigChange(config) {
+            document.getElementById('platformTitle').textContent = config.platform_title || defaultConfig.platform_title;
+            document.getElementById('subjectName').textContent = config.subject_name || defaultConfig.subject_name;
+            document.getElementById('studentName').textContent = config.student_name || defaultConfig.student_name;
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["platform_title", config.platform_title || defaultConfig.platform_title],
+                    ["subject_name", config.subject_name || defaultConfig.subject_name],
+                    ["student_name", config.student_name || defaultConfig.student_name]
+                ])
+            });
+        }
+
+        preventCopyPaste();
+        renderLectures();
+        onConfigChange(defaultConfig);
+    </script>
+</body>
+</html>
